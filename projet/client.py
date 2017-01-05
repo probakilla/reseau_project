@@ -14,10 +14,28 @@ print ("")
 # connexion au serveur
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.connect(("", 1111))
+sep = '\n'
 
-case_number = input ('Choisissez une case a jouer : ')
+grid ()
 
-sock.send (case_number.encode ())
-grid = sock.recv (8192)
+while (True) :
 
-grid.display ()
+    caseNumber = -1
+    while caseNumber <0 or  caseNumber >= NB_CELLS:
+        caseNumber = input ('Choisissez une case a jouer : ')
+    caseNumber = pack ('!i', caseNumber)
+    sock.send (caseNumber)
+
+    buf = ''
+    while len(buf) < 4 :
+        buf += sock.recv (8)
+    msg = struct.unpack('!i', buf[:4])[0]
+    if (msg == OK) :
+        grid.play (J1, caseNumber)
+        grid.display ()
+    else :
+        grid.play (J2, caseNumber)
+        grid.display ()
+        print ("Tu t'es fait niké kek")
+    
+sock.close ()

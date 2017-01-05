@@ -6,6 +6,8 @@ EMPTY = 0
 J1 = 1
 J2 = 2
 NB_CELLS=9
+OK = 1
+KO = 0
 
 class grid:
     cells = []
