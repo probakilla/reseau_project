@@ -22,11 +22,12 @@ while (True) :
             tmp_s = i.accept ()
             sock_addr = tmp_s [1]
             client_list += [tmp_s [0]]
-            if (nb_players == 2):
-                for j in client_list:
-                    j.send (b"la partie va commencer")
-            else:
-                i.send (b"En attente d'un autre joueur")
+           # if (nb_players == 2):
+            #    for j in client_list:
+             #       j.send (b"la partie va commencer")
+           # else:
+            #    msg = "En attente d'un autre joueur\n"
+             #   i.send (bytes (msg.encode('utf-8')))
                     
         else :
             data = i.recv (1500)
@@ -37,7 +38,7 @@ while (True) :
                 if (nb_players == 2):
                     print()
                 else:
-                    i.send(b"Pas assez de joueurs pour commencer à jouer")
+                    i.send(b"Pas assez de joueurs pour commencer a jouer")
                     
 
         
