@@ -16,3 +16,8 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.connect(("", 1111))
 
 case_number = raw_imput ("Choisissez une case a jouer : ")
+
+sock.send (case_number.encode ())
+grid = sock.recv (8192)
+
+grid.display ()
