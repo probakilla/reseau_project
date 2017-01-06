@@ -13,29 +13,46 @@ print ("")
 
 # connexion au serveur
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-sock.connect(("", 1111))
-sep = '\n'
-
-grid ()
+sock.connect(("localhost", 1111))
+player = sock.recv (8192)
+player = int(player)
+grid = grid ()
 
 while (True) :
+    gameOver = sock.recv (8192)
+    gameOver = int (gameOver)
+    
+    if(gameOver == 1):
+        if grid.gameOver() == player:
+            print("You win !")
+        else:
+            print("you loose !")
+        break
+    curentPlayer = sock.recv (8192)
+    curentPlayer = int (curentPlayer)
 
     caseNumber = -1
-    while caseNumber <0 or  caseNumber >= NB_CELLS:
-        caseNumber = input ('Choisissez une case a jouer : ')
-    caseNumber = pack ('!i', caseNumber)
-    sock.send (caseNumber)
+    if (curentPlayer == player):
+        while caseNumber <0 or  caseNumber >= NB_CELLS:
+            caseNumber = input ('Choisissez une case a jouer : ')
+            caseNumber = int (caseNumber)
+        caseNumber = str (caseNumber)
+        sock.send (caseNumber.encode ())
+        caseNumber = int (caseNumber)
+        msg = sock.recv (8192)
+        msg = int (msg)
+        if (msg == OK) :
+            grid.play (J1, caseNumber)
+            grid.display ()
+        elif (msg == -1):
+            print ("Tu a déjà joué cette case")
+        else :
+            grid.play (J2, caseNumber)
+            grid.display ()
+            print("Ton adversaire a déjà jouer cette case donc retente ta chance\n")
+    else:
+        print ("En attente du coup de l'autre joueur")
 
-    buf = ''
-    while len(buf) < 4 :
-        buf += sock.recv (8)
-    msg = struct.unpack('!i', buf[:4])[0]
-    if (msg == OK) :
-        grid.play (J1, caseNumber)
-        grid.display ()
-    else :
-        grid.play (J2, caseNumber)
-        grid.display ()
-        print ("Tu t'es fait niké kek")
-    
+
+        
 sock.close ()
